@@ -17,8 +17,16 @@ public class Booking {
         this.venueName = venueName;
         this.bookerName = bookerName;
         this.date = date;
-        setStartHour(startHour);
-        setEndHour(endHour);
+
+        if (startHour < 0 || startHour > 23) {
+            throw new IllegalArgumentException("Start hour must be between 0 and 23");
+        }
+        this.startHour = startHour;
+
+        if (endHour < 1 || endHour > 24) {
+            throw new IllegalArgumentException("End hour must be between 1 and 24");
+        }
+        this.endHour = endHour;
     }
 
     public int getId() { return id; }
