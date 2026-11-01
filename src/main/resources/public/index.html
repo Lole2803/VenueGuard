@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>VenueGuard</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 900px; margin: 20px auto; padding: 0 12px; }
+    table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+    th, td { border: 1px solid #ccc; padding: 6px 8px; text-align: left; }
+    th { background: #f0f0f0; }
+    form { display: grid; gap: 8px; max-width: 360px; margin-bottom: 20px; }
+    #message { padding: 8px; margin-bottom: 12px; display: none; }
+    .error { background: #fde8e8; border: 1px solid #e0a0a0; }
+    .ok { background: #e6f6e6; border: 1px solid #9ac89a; }
+  </style>
+</head>
+<body>
+  <h1>VenueGuard</h1>
+  <p>Book a venue and avoid clashes.</p>
+  <div id='message'></div>
+
+  <h2>Venues</h2>
+  <table>
+    <thead><tr><th>Name</th><th>Capacity</th><th>Location</th><th>Max hours per booking</th></tr></thead>
+    <tbody id='venueRows'></tbody>
+  </table>
+
+  <h2 id='formTitle'>New booking</h2>
+  <form id='bookingForm'>
+    <label>Venue <select id='venueName'></select></label>
+    <label>Your name <input type='text' id='bookerName' required></label>
+    <label>Date <input type='date' id='date' required></label>
+    <label>Start hour (0-23) <input type='number' id='startHour' min='0' max='23' required></label>
+    <label>End hour (1-24) <input type='number' id='endHour' min='1' max='24' required></label>
+    <button type='submit' id='saveButton'>Book venue</button>
+    <button type='button' id='cancelEditButton' style='display:none'>Stop editing</button>
+  </form>
+
+  <h2>Bookings</h2>
+  <table>
+    <thead><tr><th>ID</th><th>Venue</th><th>Booked by</th><th>Date</th><th>From</th><th>To</th><th>Actions</th></tr></thead>
+    <tbody id='bookingRows'></tbody>
+  </table>
+
+  <script src='app.js'></script>
+</body>
+</html>
