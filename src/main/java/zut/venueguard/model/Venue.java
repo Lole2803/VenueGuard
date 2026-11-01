@@ -17,6 +17,7 @@ public abstract class Venue {
     public String getName() { return name; }
     public int getCapacity() { return capacity; }
     public String getLocation() { return location; }
+    public int getMaxBookingHours() { return maxBookingHours(); }
 
     // Each type of venue decides its own limit
     public abstract int maxBookingHours();
