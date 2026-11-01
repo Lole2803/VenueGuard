@@ -57,6 +57,17 @@ public class BookingManager {
         bookings.remove(existing);
         return true;
     }
+    public void loadBookings(List<Booking> saved){
+        bookings.clear();
+        bookings.addAll(saved);
+        for (Booking b : saved) {
+            if (b.getId() >= nextId) {
+                nextId = b.getId() + 1;
+            }
+            b.setId(nextId++);
+            bookings.add(b);
+        }
+    }
 
     private Booking findById(int id) {
         for (Booking b : bookings) {
