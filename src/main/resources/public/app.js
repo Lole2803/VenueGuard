@@ -1,12 +1,16 @@
 // Which booking are we editing? null means we are adding a new one.
 let editingId = null;
+// The venues loaded from the server (used for the hint under the drop-down)
+let venues = [];
 
 const messageBox = document.getElementById('message');
+const venueSelect = document.getElementById('venueName');
 
 function showMessage(text, isError) {
   messageBox.textContent = text;
   messageBox.className = isError ? 'error' : 'ok';
   messageBox.style.display = 'block';
+  messageBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function clearMessage() {
@@ -20,15 +24,22 @@ function addCell(row, text) {
   row.appendChild(cell);
 }
 
+// Shows the limit of the chosen venue under the drop-down
+function updateHint() {
+  const v = venues.find(venue => venue.name === venueSelect.value);
+  document.getElementById('venueHint').textContent = v
+    ? 'Maximum ' + v.maxBookingHours + ' hours per booking. Capacity: ' + v.capacity
+    : '';
+}
+
 // GET /venues: fill the venue table and the drop-down list
 async function loadVenues() {
   const response = await fetch('/venues');
-  const venues = await response.json();
+  venues = await response.json();
 
   const rows = document.getElementById('venueRows');
-  const select = document.getElementById('venueName');
   rows.innerHTML = '';
-  select.innerHTML = '';
+  venueSelect.innerHTML = '';
 
   for (const v of venues) {
     const row = document.createElement('tr');
@@ -41,8 +52,9 @@ async function loadVenues() {
     const option = document.createElement('option');
     option.value = v.name;
     option.textContent = v.name;
-    select.appendChild(option);
+    venueSelect.appendChild(option);
   }
+  updateHint();
 }
 
 // GET /bookings: fill the bookings table
@@ -71,6 +83,7 @@ async function loadBookings() {
 
     const deleteButton = document.createElement('button');
     deleteButton.textContent = 'Cancel booking';
+    deleteButton.className = 'danger';
     deleteButton.onclick = () => cancelBooking(b.id);
     actions.appendChild(deleteButton);
 
@@ -82,7 +95,7 @@ async function loadBookings() {
 // Put a booking into the form so the user can change it
 function startEditing(b) {
   editingId = b.id;
-  document.getElementById('venueName').value = b.venueName;
+  venueSelect.value = b.venueName;
   document.getElementById('bookerName').value = b.bookerName;
   document.getElementById('date').value = b.date;
   document.getElementById('startHour').value = b.startHour;
@@ -90,6 +103,8 @@ function startEditing(b) {
   document.getElementById('formTitle').textContent = 'Editing booking ' + b.id;
   document.getElementById('saveButton').textContent = 'Save changes';
   document.getElementById('cancelEditButton').style.display = 'inline';
+  updateHint();
+  document.getElementById('bookingForm').scrollIntoView({ behavior: 'smooth' });
 }
 
 function stopEditing() {
@@ -98,12 +113,31 @@ function stopEditing() {
   document.getElementById('formTitle').textContent = 'New booking';
   document.getElementById('saveButton').textContent = 'Book venue';
   document.getElementById('cancelEditButton').style.display = 'none';
+  updateHint();
+}
+
+// Ask "are you sure?" with SweetAlert2 (or the browser's own box if it did not load)
+async function askToCancel(id) {
+  if (typeof Swal === 'undefined') {
+    return confirm('Cancel booking ' + id + '?');
+  }
+  const result = await Swal.fire({
+    title: 'Cancel this booking?',
+    text: 'Booking ' + id + ' will be removed. This cannot be undone.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#c0392b',
+    confirmButtonText: 'Yes, cancel it',
+    cancelButtonText: 'Keep it'
+  });
+  return result.isConfirmed;
 }
 
 // DELETE /bookings/{id}
 async function cancelBooking(id) {
-  if (!confirm('Cancel booking ' + id + '?')) {
-    return;
+  const sure = await askToCancel(id);
+  if (!sure) {
+    return; // the user chose to keep the booking
   }
   clearMessage();
   const response = await fetch('/bookings/' + id, { method: 'DELETE' });
@@ -122,7 +156,7 @@ document.getElementById('bookingForm').addEventListener('submit', async (event) 
   clearMessage();
 
   const booking = {
-    venueName: document.getElementById('venueName').value,
+    venueName: venueSelect.value,
     bookerName: document.getElementById('bookerName').value,
     date: document.getElementById('date').value,
     startHour: Number(document.getElementById('startHour').value),
@@ -144,12 +178,13 @@ document.getElementById('bookingForm').addEventListener('submit', async (event) 
     stopEditing();
     await loadBookings();
   } else {
-    // 409 = clash, 400 = bad input, 404 = not found. The server sends the message.
+    // 409 = clash or limit, 400 = bad input, 404 = not found. The server sends the message.
     const text = await response.text();
     showMessage(text || ('Error ' + response.status), true);
   }
 });
 
+venueSelect.addEventListener('change', updateHint);
 document.getElementById('cancelEditButton').addEventListener('click', stopEditing);
 
 // run when the page opens
