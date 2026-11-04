@@ -10,7 +10,8 @@ import zut.venueguard.storage.BookingStorage;
 
 public class Main {
     public static void main(String[] args) {
-        BookingManager manager = new BookingManager();
+    // Starts the Javalin server, loads saved bookings and defines the endpoints
+    BookingManager manager = new BookingManager();
 
         // Load saved bookings when the application starts
         BookingStorage storage = new BookingStorage("data/bookings.json");
