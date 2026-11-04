@@ -4,6 +4,16 @@
 
 VenueGuard is a Java backend (Javalin) with a simple web page. It lets lecturers and class representatives book campus venues and stops two groups from being booked into the same room at the same time.
 
+## Group members
+
+| Full Name | Student Number |
+|-----------|----------------|
+| Loraine Nkuna | 2410028 |
+| Loveness Nanyinza | 2300847 |
+| Milika Muwaya | 2410072 |
+| Niza Kowa | 2410271 |
+| Denson Mumba | 2410189 |
+
 ## The problem
 
 Venues on campus, such as the Main Hall and the computer labs ICE 1 and ICE 2, are booked informally, through verbal agreements, paper timetables or messages. As a result, two lecturers or class groups often arrive for the same room at the same time. Time is lost while people argue, look for another room, or cancel the session.
@@ -121,14 +131,14 @@ VenueGuard/
     `-- resources/public/ index.html, style.css, app.js
 ```
 
-## Group members
+## Who wrote what
 
-| No. | Full name | Student number | GitHub account | Part |
-|---|---|---|---|---|
-| 1 | Loraine Nkuna | 2410028 | Lole2803 | `Venue`, `MainHall`, `ComputerLab` |
-| 2 | Loveness Nanyinza | 2300847 | Loveness2003 | `BookingManager` and the clash check |
-| 3 | Milika Muwaya | 2410072 | Milika-01 | `Booking`, `VenueClashException` |
-| 4 | Niza Kowa | 2410271 | NizaKowa | The web page (HTML, CSS and JavaScript) |
-| 5 | Denson Mumba | 2410189 | Denson-Jr | Javalin endpoints and saving to a file |
+| Member | GitHub account | Part |
+|---|---|---|
+| Loraine Nkuna | Lole2803 | `Venue`, `MainHall`, `ComputerLab` |
+| Loveness Nanyinza | Loveness2003 | `BookingManager` and the clash check |
+| Milika Muwaya | Milika-01 | `Booking`, `VenueClashException` |
+| Niza Kowa | NizaKowa | The web page (HTML, CSS and JavaScript) |
+| Denson Mumba | Denson-Jr | Javalin endpoints and saving to a file |
 
 Built with Java, Javalin and Maven for the Object-Oriented Programming course group project.
